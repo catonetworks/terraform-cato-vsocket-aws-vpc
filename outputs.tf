@@ -13,3 +13,5 @@ output "external_sg" { value = aws_security_group.external_sg.id }
 output "mgmt_eip_id" { value = aws_eip.mgmteip.id }
 output "wan_eip_id" { value = aws_eip.waneip.id }
 output "vpc_id" { value = aws_vpc.cato-vpc.id }
+output "socket_site_id" { value = module.vsocket-aws.socket_site_id }
+output "socket_site_serial" { value = module.vsocket-aws.socket_site_serial }

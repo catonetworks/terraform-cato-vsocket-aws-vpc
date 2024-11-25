@@ -1,4 +1,4 @@
-# CATO VSOCKET AWS Terraform module
+# CATO VSOCKET AWS VPC Terraform module
 
 Terraform module which creates a VPC, required subnets, elastic network interfaces, security groups, route tables, an AWS Socket Site in the Cato Management Application (CMA), and deploys a virtual socket ec2 instance in AWS.
 
