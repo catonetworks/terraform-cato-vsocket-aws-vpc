@@ -1,4 +1,4 @@
-## VPC Variables
+## Cato Provider Variables
 variable "baseurl" {
   description = "Cato API base URL"
   type        = string
@@ -125,4 +125,10 @@ variable "subnet_range_lan" {
     The minimum subnet length to support High Availability is /29.
     The accepted input format is Standard CIDR Notation, e.g. X.X.X.X/X
 	EOT
+}
+
+variable "tags" {
+  description = "Tags to be appended to AWS resources"
+  type        = map(string)
+  default = {}
 }

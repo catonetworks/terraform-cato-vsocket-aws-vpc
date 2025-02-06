@@ -53,6 +53,10 @@ module "vsocket-aws-vpc" {
     state_code   = "US-CA" ## Optional - for countries with states
     timezone     = "America/Los_Angeles"
   }
+  tags = {
+    Environment = "Production"
+    Owner = "Operations Team"
+  }
 }
 ```
 
