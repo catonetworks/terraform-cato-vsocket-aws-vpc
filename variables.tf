@@ -1,20 +1,3 @@
-## Cato Provider Variables
-variable "baseurl" {
-  description = "Cato API base URL"
-  type        = string
-  default     = "https://api.catonetworks.com/api/v1/graphql2"
-}
-
-variable "token" {
-  description = "Cato API token"
-  type        = string
-}
-
-variable "account_id" {
-  description = "Cato account ID"
-  type        = number
-}
-
 ## Cato socket site variables
 variable "site_name" {
   description = "Name of the vsocket site"
@@ -56,7 +39,7 @@ variable "site_location" {
 ## VPC Module Variables
 variable "region" {
   description = "AWS Region"
-  type    = string
+  type        = string
 }
 
 variable "ingress_cidr_blocks" {
@@ -130,5 +113,5 @@ variable "subnet_range_lan" {
 variable "tags" {
   description = "Tags to be appended to AWS resources"
   type        = map(string)
-  default = {}
+  default     = {}
 }

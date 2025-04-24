@@ -9,3 +9,8 @@
 
 ### Features
 - Adding socket_site_serial and socket_site_id to module outputs.
+
+## 0.0.4 (2025-04-24)
+
+### Features
+- Extracting provider from module to be passed in

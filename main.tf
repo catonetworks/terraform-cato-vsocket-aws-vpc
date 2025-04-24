@@ -1,11 +1,6 @@
-## VPC Module Resources
-provider "aws" {
-  region = var.region
-}
-
 resource "aws_vpc" "cato-vpc" {
   cidr_block = var.native_network_range
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-VPC"
   })
 }
@@ -28,7 +23,7 @@ resource "aws_subnet" "mgmt_subnet" {
   vpc_id            = aws_vpc.cato-vpc.id
   cidr_block        = var.subnet_range_mgmt
   availability_zone = data.aws_availability_zones.available.names[0]
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-MGMT-Subnet"
   })
 }
@@ -37,7 +32,7 @@ resource "aws_subnet" "wan_subnet" {
   vpc_id            = aws_vpc.cato-vpc.id
   cidr_block        = var.subnet_range_wan
   availability_zone = data.aws_availability_zones.available.names[0]
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-WAN-Subnet"
   })
 }
@@ -46,7 +41,7 @@ resource "aws_subnet" "lan_subnet" {
   vpc_id            = aws_vpc.cato-vpc.id
   cidr_block        = var.subnet_range_lan
   availability_zone = data.aws_availability_zones.available.names[0]
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-LAN-Subnet"
   })
 }
@@ -82,7 +77,7 @@ resource "aws_security_group" "internal_sg" {
       self             = false
     }
   ]
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     name = "${var.site_name}-Internal-SG"
   })
 }
@@ -128,7 +123,7 @@ resource "aws_security_group" "external_sg" {
       self             = false
     }
   ]
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     name = "${var.site_name}-External-SG"
   })
 }
@@ -139,7 +134,7 @@ resource "aws_network_interface" "mgmteni" {
   subnet_id         = aws_subnet.mgmt_subnet.id
   private_ips       = [var.mgmt_eni_ip]
   security_groups   = [aws_security_group.external_sg.id]
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-MGMT-INT"
   })
 }
@@ -149,7 +144,7 @@ resource "aws_network_interface" "waneni" {
   subnet_id         = aws_subnet.wan_subnet.id
   private_ips       = [var.wan_eni_ip]
   security_groups   = [aws_security_group.external_sg.id]
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-WAN-INT"
   })
 }
@@ -159,20 +154,20 @@ resource "aws_network_interface" "laneni" {
   subnet_id         = aws_subnet.lan_subnet.id
   private_ips       = [var.lan_eni_ip]
   security_groups   = [aws_security_group.internal_sg.id]
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-LAN-INT"
   })
 }
 
 # Elastic IP Addresses
 resource "aws_eip" "waneip" {
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-WAN-EIP"
   })
 }
 
 resource "aws_eip" "mgmteip" {
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-MGMT-EIP"
   })
 }
@@ -191,21 +186,21 @@ resource "aws_eip_association" "mgmteip_assoc" {
 # Routing Tables
 resource "aws_route_table" "wanrt" {
   vpc_id = aws_vpc.cato-vpc.id
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-WAN-RT"
   })
 }
 
 resource "aws_route_table" "mgmtrt" {
   vpc_id = aws_vpc.cato-vpc.id
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-MGMT-RT"
   })
 }
 
 resource "aws_route_table" "lanrt" {
   vpc_id = aws_vpc.cato-vpc.id
-  tags = merge(var.tags,{
+  tags = merge(var.tags, {
     Name = "${var.site_name}-LAN-RT"
   })
 }
@@ -247,9 +242,6 @@ resource "aws_route_table_association" "lan_subnet_route_table_association" {
 
 module "vsocket-aws" {
   source               = "catonetworks/vsocket-aws/cato"
-  baseurl              = var.baseurl
-  token                = var.token
-  account_id           = var.account_id
   vpc_id               = aws_vpc.cato-vpc.id
   key_pair             = var.key_pair
   native_network_range = var.native_network_range
