@@ -14,3 +14,9 @@
 
 ### Features
 - Extracting provider from module to be passed in
+
+
+## 0.0.5 (2025-05-07)
+
+### Features
+- Made vpc and internet gateway resource optional

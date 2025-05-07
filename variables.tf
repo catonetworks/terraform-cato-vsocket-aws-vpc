@@ -37,9 +37,16 @@ variable "site_location" {
 }
 
 ## VPC Module Variables
-variable "region" {
-  description = "AWS Region"
+variable "vpc_id" {
+  description = "Specify a VPC ID to use. If not specified, a new VPC will be created."
   type        = string
+  default     = null
+}
+
+variable "internet_gateway_id" {
+  description = "Specify an Internet Gateway ID to use. If not specified, a new Internet Gateway will be created."
+  type        = string
+  default     = null
 }
 
 variable "ingress_cidr_blocks" {

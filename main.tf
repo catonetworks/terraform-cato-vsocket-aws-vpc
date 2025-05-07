@@ -1,4 +1,5 @@
 resource "aws_vpc" "cato-vpc" {
+  count      = var.vpc_id == null ? 1 : 0
   cidr_block = var.native_network_range
   tags = merge(var.tags, {
     Name = "${var.site_name}-VPC"
@@ -11,16 +12,17 @@ data "aws_availability_zones" "available" {
 }
 
 # Internet Gateway and Attachment
-resource "aws_internet_gateway" "internet_gateway" {}
-
-resource "aws_internet_gateway_attachment" "attach_gateway" {
-  internet_gateway_id = aws_internet_gateway.internet_gateway.id
-  vpc_id              = aws_vpc.cato-vpc.id
+resource "aws_internet_gateway" "internet_gateway" {
+  count = var.internet_gateway_id == null ? 1 : 0
+  tags = {
+    Name = "${var.site_name}-IGW"
+  }
+  vpc_id = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
 }
 
 # Subnets
 resource "aws_subnet" "mgmt_subnet" {
-  vpc_id            = aws_vpc.cato-vpc.id
+  vpc_id            = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   cidr_block        = var.subnet_range_mgmt
   availability_zone = data.aws_availability_zones.available.names[0]
   tags = merge(var.tags, {
@@ -29,7 +31,7 @@ resource "aws_subnet" "mgmt_subnet" {
 }
 
 resource "aws_subnet" "wan_subnet" {
-  vpc_id            = aws_vpc.cato-vpc.id
+  vpc_id            = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   cidr_block        = var.subnet_range_wan
   availability_zone = data.aws_availability_zones.available.names[0]
   tags = merge(var.tags, {
@@ -38,7 +40,7 @@ resource "aws_subnet" "wan_subnet" {
 }
 
 resource "aws_subnet" "lan_subnet" {
-  vpc_id            = aws_vpc.cato-vpc.id
+  vpc_id            = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   cidr_block        = var.subnet_range_lan
   availability_zone = data.aws_availability_zones.available.names[0]
   tags = merge(var.tags, {
@@ -50,7 +52,7 @@ resource "aws_subnet" "lan_subnet" {
 resource "aws_security_group" "internal_sg" {
   name        = "${var.site_name}-Internal-SG"
   description = "CATO LAN Security Group - Allow all traffic Inbound"
-  vpc_id      = aws_vpc.cato-vpc.id
+  vpc_id      = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   ingress = [
     {
       description      = "Allow all traffic Inbound from Ingress CIDR Blocks"
@@ -85,7 +87,7 @@ resource "aws_security_group" "internal_sg" {
 resource "aws_security_group" "external_sg" {
   name        = "${var.site_name}-External-SG"
   description = "CATO WAN Security Group - Allow HTTPS In"
-  vpc_id      = aws_vpc.cato-vpc.id
+  vpc_id      = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   ingress = [
     {
       description      = "Allow HTTPS In"
@@ -185,21 +187,21 @@ resource "aws_eip_association" "mgmteip_assoc" {
 
 # Routing Tables
 resource "aws_route_table" "wanrt" {
-  vpc_id = aws_vpc.cato-vpc.id
+  vpc_id = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   tags = merge(var.tags, {
     Name = "${var.site_name}-WAN-RT"
   })
 }
 
 resource "aws_route_table" "mgmtrt" {
-  vpc_id = aws_vpc.cato-vpc.id
+  vpc_id = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   tags = merge(var.tags, {
     Name = "${var.site_name}-MGMT-RT"
   })
 }
 
 resource "aws_route_table" "lanrt" {
-  vpc_id = aws_vpc.cato-vpc.id
+  vpc_id = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   tags = merge(var.tags, {
     Name = "${var.site_name}-LAN-RT"
   })
@@ -209,13 +211,13 @@ resource "aws_route_table" "lanrt" {
 resource "aws_route" "wan_route" {
   route_table_id         = aws_route_table.wanrt.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.internet_gateway.id
+  gateway_id             = var.internet_gateway_id == null ? aws_internet_gateway.internet_gateway[0].id : var.internet_gateway_id
 }
 
 resource "aws_route" "mgmt_route" {
   route_table_id         = aws_route_table.mgmtrt.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.internet_gateway.id
+  gateway_id             = var.internet_gateway_id == null ? aws_internet_gateway.internet_gateway[0].id : var.internet_gateway_id
 }
 
 resource "aws_route" "lan_route" {
@@ -242,10 +244,9 @@ resource "aws_route_table_association" "lan_subnet_route_table_association" {
 
 module "vsocket-aws" {
   source               = "catonetworks/vsocket-aws/cato"
-  vpc_id               = aws_vpc.cato-vpc.id
+  vpc_id               = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   key_pair             = var.key_pair
   native_network_range = var.native_network_range
-  region               = var.region
   site_name            = var.site_name
   site_description     = var.site_description
   site_type            = var.site_type
