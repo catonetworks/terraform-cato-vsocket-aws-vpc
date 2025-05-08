@@ -12,9 +12,17 @@ variable "site_description" {
 variable "native_network_range" {
   type        = string
   description = <<EOT
-  	Choose a unique range for your new VPC and vsocket site that does not conflict with the rest of your Wide Area Network.
+  	Choose a unique range for your new vsocket site that does not conflict with the rest of your Wide Area Network.
     The accepted input format is Standard CIDR Notation, e.g. X.X.X.X/X
 	EOT
+}
+
+variable "vpc_cidr_block" {
+  type        = string
+  description = <<EOT
+  	Choose a unique range for your new vpc where the vSocket will live.
+    The accepted input format is Standard CIDR Notation, e.g. X.X.X.X/X
+    EOT
 }
 
 variable "site_type" {

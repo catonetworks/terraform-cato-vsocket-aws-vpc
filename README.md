@@ -61,6 +61,7 @@ module "vsocket-aws-vpc" {
   ingress_cidr_blocks   = ["0.0.0.0/0"]
   key_pair              = "your-keypair-name-here"
   native_network_range  = "10.1.0.0/16"
+  vpc_cidr_block        = "10.1.0.0/16"
   subnet_range_mgmt     = "10.1.1.0/24"
   subnet_range_wan      = "10.1.2.0/24"
   subnet_range_lan      = "10.1.3.0/24"
