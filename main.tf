@@ -1,6 +1,6 @@
 resource "aws_vpc" "cato-vpc" {
   count      = var.vpc_id == null ? 1 : 0
-  cidr_block = var.vpc_cidr_block
+  cidr_block = var.vpc_network_range
   tags = merge(var.tags, {
     Name = "${var.site_name}-VPC"
   })
