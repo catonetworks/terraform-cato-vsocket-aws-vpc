@@ -20,3 +20,8 @@
 
 ### Features
 - Made vpc and internet gateway resource optional
+
+## 0.0.6 (2024-05-07)
+
+### Features
+- Added optional license resource and inputs used for commercial site deployments

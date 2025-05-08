@@ -256,4 +256,6 @@ module "vsocket-aws" {
   lan_local_ip         = var.lan_eni_ip
   site_location        = var.site_location
   tags                 = var.tags
+  license_id           = var.license_id
+  license_bw           = var.license_bw
 }
