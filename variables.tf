@@ -17,7 +17,7 @@ variable "native_network_range" {
 	EOT
 }
 
-variable "vpc_cidr_block" {
+variable "vpc_network_range" {
   type        = string
   description = <<EOT
   	Choose a unique range for your new vpc where the vSocket will live.
