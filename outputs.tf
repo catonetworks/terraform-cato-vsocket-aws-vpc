@@ -22,7 +22,7 @@ output "cato_site_name" { value = module.vsocket-aws.cato_site_name }
 output "native_network_range" { value = module.vsocket-aws.native_network_range }
 output "local_ip" { value = module.vsocket-aws.local_ip }
 output "cato_license_site" {
-  value = var.license_id==null ? null : {
+  value = var.license_id == null ? null : {
     id           = cato_license.license[0].id
     license_id   = cato_license.license[0].license_id
     license_info = cato_license.license[0].license_info

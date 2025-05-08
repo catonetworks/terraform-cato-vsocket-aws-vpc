@@ -21,7 +21,13 @@
 ### Features
 - Made vpc and internet gateway resource optional
 
-## 0.0.6 (2024-05-07)
+## 0.0.6 (2025-05-07)
 
 ### Features
 - Added optional license resource and inputs used for commercial site deployments
+
+## 0.0.7 (2025-05-08)
+
+### Features
+- Adjusted Readme Example to Match Variable Name (vpc_range becomes native_network_range)
+- Disassociated native_network_range from vpc_cidr_range to enable VPC_CIDR to be different from Native_network_range
