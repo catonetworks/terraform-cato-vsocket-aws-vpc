@@ -22,10 +22,6 @@ output "cato_site_name" { value = module.vsocket-aws.cato_site_name }
 output "native_network_range" { value = module.vsocket-aws.native_network_range }
 output "local_ip" { value = module.vsocket-aws.local_ip }
 output "cato_license_site" {
-  value = var.license_id == null ? null : {
-    id           = cato_license.license[0].id
-    license_id   = cato_license.license[0].license_id
-    license_info = cato_license.license[0].license_info
-    site_id      = cato_license.license[0].site_id
-  }
+  value = var.license_id == null ? null : module.vsocket-aws.cato_license_site
 }
+output "lan_subnet_route_table_id" { value = aws_route_table.lanrt.id }
