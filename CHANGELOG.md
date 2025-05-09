@@ -37,3 +37,6 @@
 ### Features
 - Adjusted Outputs to accomodate license resource added in ver 0.0.6
 - Added output for Socket Lan Route Table (lan_subnet_route_table_id) for use in upstream calls
+- Removed Management Route Table - No Longer Needed 
+- Updated Cato vSocket WAN Security Group to Remove Inbound Rules 
+- Updated Cato vSocket WAN Security Group to Add Outbound Rules (udp/443, tcp/443, udp/53, tcp/53)

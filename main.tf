@@ -50,7 +50,7 @@ resource "aws_subnet" "lan_subnet" {
 
 # Internal and External Security Groups
 resource "aws_security_group" "internal_sg" {
-  name        = "${var.site_name}-Internal-SG"
+  name        = "${var.site_name}-Cato-Internal-SG"
   description = "CATO LAN Security Group - Allow all traffic Inbound"
   vpc_id      = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   ingress = [
@@ -80,44 +80,54 @@ resource "aws_security_group" "internal_sg" {
     }
   ]
   tags = merge(var.tags, {
-    name = "${var.site_name}-Internal-SG"
+    name = "${var.site_name}-Cato-Internal-SG"
   })
 }
 
 resource "aws_security_group" "external_sg" {
-  name        = "${var.site_name}-External-SG"
-  description = "CATO WAN Security Group - Allow HTTPS In"
+  name        = "${var.site_name}-Cato-External-SG"
+  description = "CATO WAN Security Group"
   vpc_id      = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
-  ingress = [
+  ingress     = []
+  egress = [
     {
-      description      = "Allow HTTPS In"
+      description      = "Allow HTTPS Outbound"
       protocol         = "tcp"
       from_port        = 443
       to_port          = 443
-      cidr_blocks      = var.ingress_cidr_blocks
+      cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
       security_groups  = []
       self             = false
     },
     {
-      description      = "Allow SSH In"
-      protocol         = "tcp"
-      from_port        = 22
-      to_port          = 22
-      cidr_blocks      = var.ingress_cidr_blocks
+      description      = "Allow DTLS Outbound"
+      protocol         = "udp"
+      from_port        = 443
+      to_port          = 443
+      cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
       security_groups  = []
       self             = false
-    }
-  ]
-  egress = [
+    },
     {
-      description      = "Allow all traffic Outbound"
-      protocol         = -1
-      from_port        = 0
-      to_port          = 0
+      description      = "Allow DNS-UDP Outbound"
+      protocol         = "udp"
+      from_port        = 53
+      to_port          = 53
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+    },
+    {
+      description      = "Allow DNS-TCP Outbound"
+      protocol         = "tcp"
+      from_port        = 53
+      to_port          = 53
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
@@ -126,7 +136,7 @@ resource "aws_security_group" "external_sg" {
     }
   ]
   tags = merge(var.tags, {
-    name = "${var.site_name}-External-SG"
+    name = "${var.site_name}-Cato-External-SG"
   })
 }
 
@@ -193,13 +203,6 @@ resource "aws_route_table" "wanrt" {
   })
 }
 
-resource "aws_route_table" "mgmtrt" {
-  vpc_id = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
-  tags = merge(var.tags, {
-    Name = "${var.site_name}-MGMT-RT"
-  })
-}
-
 resource "aws_route_table" "lanrt" {
   vpc_id = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   tags = merge(var.tags, {
@@ -214,12 +217,6 @@ resource "aws_route" "wan_route" {
   gateway_id             = var.internet_gateway_id == null ? aws_internet_gateway.internet_gateway[0].id : var.internet_gateway_id
 }
 
-resource "aws_route" "mgmt_route" {
-  route_table_id         = aws_route_table.mgmtrt.id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = var.internet_gateway_id == null ? aws_internet_gateway.internet_gateway[0].id : var.internet_gateway_id
-}
-
 resource "aws_route" "lan_route" {
   route_table_id         = aws_route_table.lanrt.id
   destination_cidr_block = "0.0.0.0/0"
@@ -229,7 +226,7 @@ resource "aws_route" "lan_route" {
 # Route Table Associations
 resource "aws_route_table_association" "mgmt_subnet_route_table_association" {
   subnet_id      = aws_subnet.mgmt_subnet.id
-  route_table_id = aws_route_table.mgmtrt.id
+  route_table_id = aws_route_table.wanrt.id
 }
 
 resource "aws_route_table_association" "wan_subnet_route_table_association" {
