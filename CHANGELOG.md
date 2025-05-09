@@ -31,3 +31,9 @@
 ### Features
 - Adjusted Readme Example to Match Variable Name (vpc_range becomes native_network_range)
 - Disassociated native_network_range from vpc_cidr_range to enable VPC_CIDR to be different from Native_network_range
+
+## 0.0.8 (2025-05-09)
+
+### Features
+- Adjusted Outputs to accomodate license resource added in ver 0.0.6
+- Added output for Socket Lan Route Table (lan_subnet_route_table_id) for use in upstream calls
