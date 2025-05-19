@@ -40,3 +40,6 @@
 - Removed Management Route Table - No Longer Needed 
 - Updated Cato vSocket WAN Security Group to Remove Inbound Rules 
 - Updated Cato vSocket WAN Security Group to Add Outbound Rules (udp/443, tcp/443, udp/53, tcp/53)
+
+## 0.0.9
+ - Added output to get Lan Subnet Availability Zone

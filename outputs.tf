@@ -25,3 +25,4 @@ output "cato_license_site" {
   value = var.license_id == null ? null : module.vsocket-aws.cato_license_site
 }
 output "lan_subnet_route_table_id" { value = aws_route_table.lanrt.id }
+output "lan_subnet_azid" { value = aws_subnet.lan_subnet.availability_zone }
