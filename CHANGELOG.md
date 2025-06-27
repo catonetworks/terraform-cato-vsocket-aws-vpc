@@ -43,3 +43,13 @@
 
 ## 0.0.9
  - Added output to get Lan Subnet Availability Zone
+
+## 0.0.10 (2025-06-27)
+
+### Features 
+- Added automatic lookup for site_location
+- Added Routed_range handling 
+- Updated Variables for site_location and routed_range
+- Removed native_network variable as we are now inferring this value from `subnet_range_lan` 
+- Version Locked Sub-Module call
+- Updated Requirements for Provider and Terraform, adjusted versions file. 

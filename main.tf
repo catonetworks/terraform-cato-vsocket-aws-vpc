@@ -6,11 +6,6 @@ resource "aws_vpc" "cato-vpc" {
   })
 }
 
-# Lookup data from region and VPC
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
 # Internet Gateway and Attachment
 resource "aws_internet_gateway" "internet_gateway" {
   count = var.internet_gateway_id == null ? 1 : 0
@@ -240,19 +235,22 @@ resource "aws_route_table_association" "lan_subnet_route_table_association" {
 }
 
 module "vsocket-aws" {
-  source               = "catonetworks/vsocket-aws/cato"
-  vpc_id               = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
-  key_pair             = var.key_pair
-  native_network_range = var.native_network_range
-  site_name            = var.site_name
-  site_description     = var.site_description
-  site_type            = var.site_type
-  mgmt_eni_id          = aws_network_interface.mgmteni.id
-  wan_eni_id           = aws_network_interface.waneni.id
-  lan_eni_id           = aws_network_interface.laneni.id
-  lan_local_ip         = var.lan_eni_ip
-  site_location        = var.site_location
-  tags                 = var.tags
-  license_id           = var.license_id
-  license_bw           = var.license_bw
+  source           = "catonetworks/vsocket-aws/cato"
+  version          = ">= 0.0.17"
+  vpc_id           = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
+  key_pair         = var.key_pair
+  region           = var.region
+  subnet_range_lan = var.subnet_range_lan
+  site_name        = var.site_name
+  site_description = var.site_description
+  site_type        = var.site_type
+  mgmt_eni_id      = aws_network_interface.mgmteni.id
+  wan_eni_id       = aws_network_interface.waneni.id
+  lan_eni_id       = aws_network_interface.laneni.id
+  lan_local_ip     = var.lan_eni_ip
+  site_location    = var.site_location
+  tags             = var.tags
+  license_id       = var.license_id
+  license_bw       = var.license_bw
+  routed_networks  = var.routed_networks
 }

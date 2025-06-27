@@ -9,20 +9,28 @@ variable "site_description" {
   type        = string
 }
 
-variable "native_network_range" {
-  type        = string
-  description = <<EOT
-  	Choose a unique range for your new vsocket site that does not conflict with the rest of your Wide Area Network.
-    The accepted input format is Standard CIDR Notation, e.g. X.X.X.X/X
-	EOT
-}
-
 variable "vpc_network_range" {
   type        = string
   description = <<EOT
   	Choose a unique range for your new vpc where the vSocket will live.
     The accepted input format is Standard CIDR Notation, e.g. X.X.X.X/X
     EOT
+}
+
+variable "site_location" {
+  description = "Site location which is used by the Cato Socket to connect to the closest Cato PoP. If not specified, the location will be derived from the Azure region dynamicaly."
+  type = object({
+    city         = string
+    country_code = string
+    state_code   = string
+    timezone     = string
+  })
+  default = {
+    city         = null
+    country_code = null
+    state_code   = null ## Optional - for countries with states
+    timezone     = null
+  }
 }
 
 variable "site_type" {
@@ -33,15 +41,6 @@ variable "site_type" {
     condition     = contains(["DATACENTER", "BRANCH", "CLOUD_DC", "HEADQUARTERS"], var.site_type)
     error_message = "The site_type variable must be one of 'DATACENTER','BRANCH','CLOUD_DC','HEADQUARTERS'."
   }
-}
-
-variable "site_location" {
-  type = object({
-    city         = string
-    country_code = string
-    state_code   = string
-    timezone     = string
-  })
 }
 
 ## VPC Module Variables
@@ -141,4 +140,24 @@ variable "license_bw" {
   description = "The license bandwidth number for the cato site, specifying bandwidth ONLY applies for pooled licenses.  For a standard site license that is not pooled, leave this value null. Must be a number greater than 0 and an increment of 10."
   type        = string
   default     = null
+}
+
+variable "region" {
+  description = "AWS Region"
+  type        = string
+}
+
+
+variable "routed_networks" {
+  description = <<EOF
+  A map of routed networks to be accessed behind the vSocket site. The key is the network name and the value is the CIDR range.
+  Example: 
+  routed_networks = {
+  "Peered-VNET-1" = "10.100.1.0/24"
+  "On-Prem-Network" = "192.168.50.0/24"
+  "Management-Subnet" = "10.100.2.0/25"
+  }
+  EOF
+  type        = map(string)
+  default     = {} # Default to an empty map instead of null.
 }
