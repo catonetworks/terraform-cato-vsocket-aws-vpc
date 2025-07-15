@@ -36,6 +36,7 @@ Reference the resources as input variables with the following syntax:
 </details>
 
 ## NOTE
+- Site Location for Cato Socket is automatically inferred based on the region being deployed, however this can be overridden if necessary. 
 - For help with finding exact sytax to match site location for city, state_name, country_name and timezone, please refer to the [cato_siteLocation data source](https://registry.terraform.io/providers/catonetworks/cato/latest/docs/data-sources/siteLocation).
 - For help with finding a license id to assign, please refer to the [cato_licensingInfo data source](https://registry.terraform.io/providers/catonetworks/cato/latest/docs/data-sources/licensingInfo).
 
@@ -53,14 +54,24 @@ provider "cato" {
   account_id = var.account_id
 }
 
+variable "region" {
+  description = "AWS Region"
+  type        = string
+  default     = "us-west-2"
+}
+
+variable "baseurl" {}
+variable "token" {}
+variable "account_id" {}
+
 // AWS VPC and Virtual Socket Module
 module "vsocket-aws-vpc" {
   source                = "catonetworks/vsocket-aws-vpc/cato"
+  version               = ">= 0.0.10"
   vpc_id                = null
-  internet_gateway      = null 
+  internet_gateway_id   = null 
   ingress_cidr_blocks   = ["0.0.0.0/0"]
   key_pair              = "your-keypair-name-here"
-  native_network_range  = "10.1.0.0/16"
   vpc_network_range     = "10.1.0.0/16"
   subnet_range_mgmt     = "10.1.1.0/24"
   subnet_range_wan      = "10.1.2.0/24"
@@ -69,14 +80,18 @@ module "vsocket-aws-vpc" {
   wan_eni_ip            = "10.1.2.5"
   lan_eni_ip            = "10.1.3.5"
   site_name             = "Your-Cato-site-name-here"
-  region                = "us-west-2"
+  region                = var.region
   site_description      = "Your Cato site desc here"
-  site_location = {
-    city         = "New York City"
-    country_code = "US"
-    state_code   = "US-NY" ## Optional - for countries with states"
-    timezone     = "America/New_York"
+  #site_location derived from region
+
+  # Example Networks to be routed through to AWS
+  routed_networks = {
+    "Peered-VPC-1" = "10.100.1.0/24"
+    "App-VPC" = "10.100.3.0/24"
+    "DatabaseVPC" = "10.100.2.0/24"
   }
+
+  #Example Tags 
   tags = {
     Environment = "Production"
     Owner = "Operations Team"
@@ -110,20 +125,22 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.98.00 |
+| <a name="requirement_cato"></a> [cato](#requirement\_cato) | >= 0.0.27 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.98.00 |
+| <a name="provider_cato"></a> [cato](#provider\_cato) | >= 0.0.27 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_vsocket-aws"></a> [vsocket-aws](#module\_vsocket-aws) | catonetworks/vsocket-aws/cato | n/a |
+| <a name="module_vsocket-aws"></a> [vsocket-aws](#module\_vsocket-aws) | catonetworks/vsocket-aws/cato | >= 0.0.17 |
 
 ## Resources
 
@@ -151,6 +168,7 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 | [aws_subnet.wan_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_vpc.cato-vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+| [cato_siteLocation.site_location](https://registry.terraform.io/providers/catonetworks/cato/latest/docs/data-sources/siteLocation) | data source |
 
 ## Inputs
 
@@ -164,9 +182,10 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 | <a name="input_license_bw"></a> [license\_bw](#input\_license\_bw) | The license bandwidth number for the cato site, specifying bandwidth ONLY applies for pooled licenses.  For a standard site license that is not pooled, leave this value null. Must be a number greater than 0 and an increment of 10. | `string` | `null` | no |
 | <a name="input_license_id"></a> [license\_id](#input\_license\_id) | The license ID for the Cato vSocket of license type CATO\_SITE, CATO\_SSE\_SITE, CATO\_PB, CATO\_PB\_SSE.  Example License ID value: 'abcde123-abcd-1234-abcd-abcde1234567'.  Note that licenses are for commercial accounts, and not supported for trial accounts. | `string` | `null` | no |
 | <a name="input_mgmt_eni_ip"></a> [mgmt\_eni\_ip](#input\_mgmt\_eni\_ip) | Choose an IP Address within the Management Subnet. You CANNOT use the first four assignable IP addresses within the subnet as it's reserved for the AWS virtual router interface. The accepted input format is X.X.X.X | `string` | n/a | yes |
-| <a name="input_native_network_range"></a> [native\_network\_range](#input\_native\_network\_range) | Choose a unique range for your new vsocket site that does not conflict with the rest of your Wide Area Network.<br/>    The accepted input format is Standard CIDR Notation, e.g. X.X.X.X/X | `string` | n/a | yes |
+| <a name="input_region"></a> [region](#input\_region) | AWS Region | `string` | n/a | yes |
+| <a name="input_routed_networks"></a> [routed\_networks](#input\_routed\_networks) | A map of routed networks to be accessed behind the vSocket site. The key is the network name and the value is the CIDR range.<br/>  Example: <br/>  routed\_networks = {<br/>  "Peered-VNET-1" = "10.100.1.0/24"<br/>  "On-Prem-Network" = "192.168.50.0/24"<br/>  "Management-Subnet" = "10.100.2.0/25"<br/>  } | `map(string)` | `{}` | no |
 | <a name="input_site_description"></a> [site\_description](#input\_site\_description) | Description of the vsocket site | `string` | n/a | yes |
-| <a name="input_site_location"></a> [site\_location](#input\_site\_location) | n/a | <pre>object({<br/>    city         = string<br/>    country_code = string<br/>    state_code   = string<br/>    timezone     = string<br/>  })</pre> | n/a | yes |
+| <a name="input_site_location"></a> [site\_location](#input\_site\_location) | Site location which is used by the Cato Socket to connect to the closest Cato PoP. If not specified, the location will be derived from the Azure region dynamicaly. | <pre>object({<br/>    city         = string<br/>    country_code = string<br/>    state_code   = string<br/>    timezone     = string<br/>  })</pre> | <pre>{<br/>  "city": null,<br/>  "country_code": null,<br/>  "state_code": null,<br/>  "timezone": null<br/>}</pre> | no |
 | <a name="input_site_name"></a> [site\_name](#input\_site\_name) | Name of the vsocket site | `string` | n/a | yes |
 | <a name="input_site_type"></a> [site\_type](#input\_site\_type) | The type of the site | `string` | `"CLOUD_DC"` | no |
 | <a name="input_subnet_range_lan"></a> [subnet\_range\_lan](#input\_subnet\_range\_lan) | Choose a range within the VPC to use as the Private/LAN subnet. This subnet will host the target LAN interface of the vSocket so resources in the VPC (or AWS Region) can route to the Cato Cloud.<br/>    The minimum subnet length to support High Availability is /29.<br/>    The accepted input format is Standard CIDR Notation, e.g. X.X.X.X/X | `string` | n/a | yes |
@@ -197,6 +216,7 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 | <a name="output_native_network_range"></a> [native\_network\_range](#output\_native\_network\_range) | n/a |
 | <a name="output_sg_external"></a> [sg\_external](#output\_sg\_external) | n/a |
 | <a name="output_sg_internal"></a> [sg\_internal](#output\_sg\_internal) | n/a |
+| <a name="output_site_location"></a> [site\_location](#output\_site\_location) | n/a |
 | <a name="output_socket_site_id"></a> [socket\_site\_id](#output\_socket\_site\_id) | n/a |
 | <a name="output_socket_site_serial"></a> [socket\_site\_serial](#output\_socket\_site\_serial) | n/a |
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | n/a |
