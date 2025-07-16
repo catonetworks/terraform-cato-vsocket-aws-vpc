@@ -53,3 +53,10 @@
 - Removed native_network variable as we are now inferring this value from `subnet_range_lan` 
 - Version Locked Sub-Module call
 - Updated Requirements for Provider and Terraform, adjusted versions file. 
+
+## 0.0.11 (2025-07-16)
+
+### Features 
+ - Updated Site_Location to latest Revision 
+ - Version locked Cato provider to 0.0.30 or greater
+ 
