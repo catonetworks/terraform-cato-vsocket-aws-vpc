@@ -59,4 +59,10 @@
 ### Features 
  - Updated Site_Location to latest Revision 
  - Version locked Cato provider to 0.0.30 or greater
- 
+
+## 0.0.12 (2025-08-01)
+
+### Features
+ - Updated to use latest provider version 
+  - Adjusted routed_networks call to include interface_index 
+ - Version Lock to Provider version 0.0.38 or greater
