@@ -18,7 +18,7 @@ variable "vpc_network_range" {
 }
 
 variable "site_location" {
-  description = "Site location which is used by the Cato Socket to connect to the closest Cato PoP. If not specified, the location will be derived from the Azure region dynamicaly."
+  description = "Site location which is used by the Cato Socket to connect to the closest Cato PoP. If not specified, the location will be derived from the AWS region dynamicaly."
   type = object({
     city         = string
     country_code = string
