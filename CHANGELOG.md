@@ -71,3 +71,8 @@
 
 ### Features
 - Removed reference to Azure in readme for region
+
+## 0.0.14 (2026-02-23)
+
+### Features
+- Added variables for security group ingress and egress for internal and external
