@@ -77,7 +77,7 @@
 ### Features
 - Added variables for security group ingress and egress for internal and external
 
-## 0.0.15 (2026-02-23)
+## 0.0.16 (2026-02-23)
 
 ### Features
 - Updates readme

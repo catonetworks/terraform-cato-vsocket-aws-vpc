@@ -10,20 +10,6 @@ For the vpc_id and internet_gateway_id leave null to create new or add an id of 
 Create the AWS VPC and Internet Gateway resources using the following example, and create these resources first before running the module:
 
 ```hcl
-terraform {
-  required_providers {
-    cato = {
-      source  = "catonetworks/cato"
-      version = ">= 0.0.57"
-    }
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 5.98.00"
-    }
-  }
-  required_version = ">= 1.5"
-}
-
 resource "aws_vpc" "cato-vpc" {
   cidr_block = var.vpc_range
   tags = {
@@ -57,6 +43,20 @@ Reference the resources as input variables with the following syntax:
 ## Usage
 
 ```hcl
+terraform {
+  required_providers {
+    cato = {
+      source  = "catonetworks/cato"
+      version = ">= 0.0.57"
+    }
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.98.00"
+    }
+  }
+  required_version = ">= 1.5"
+}
+
 // Initialize Providers
 provider "aws" {
   region = var.region
