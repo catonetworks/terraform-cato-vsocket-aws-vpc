@@ -10,6 +10,20 @@ For the vpc_id and internet_gateway_id leave null to create new or add an id of 
 Create the AWS VPC and Internet Gateway resources using the following example, and create these resources first before running the module:
 
 ```hcl
+terraform {
+  required_providers {
+    cato = {
+      source  = "catonetworks/cato"
+      version = ">= 0.0.57"
+    }
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.98.00"
+    }
+  }
+  required_version = ">= 1.5"
+}
+
 resource "aws_vpc" "cato-vpc" {
   cidr_block = var.vpc_range
   tags = {
@@ -131,14 +145,14 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.98.00 |
-| <a name="requirement_cato"></a> [cato](#requirement\_cato) | 0.0.57 |
+| <a name="requirement_cato"></a> [cato](#requirement\_cato) | >= 0.0.38 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.98.00 |
-| <a name="provider_cato"></a> [cato](#provider\_cato) | 0.0.57 |
+| <a name="provider_cato"></a> [cato](#provider\_cato) | >= 0.0.38 |
 
 ## Modules
 
@@ -172,7 +186,7 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 | [aws_subnet.wan_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_vpc.cato-vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
-| [cato_siteLocation.site_location](https://registry.terraform.io/providers/catonetworks/cato/0.0.57/docs/data-sources/siteLocation) | data source |
+| [cato_siteLocation.site_location](https://registry.terraform.io/providers/catonetworks/cato/latest/docs/data-sources/siteLocation) | data source |
 
 ## Inputs
 
