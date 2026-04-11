@@ -98,6 +98,7 @@ module "vsocket-aws-vpc" {
   site_description      = "Your Cato site desc here"
   #site_location derived from region
 
+  # Create routed networks in Cato for additional aws subnets
   routed_networks = {
     "Peered-VNET-1" = {
       subnet = "10.100.1.0/24"
@@ -108,6 +109,22 @@ module "vsocket-aws-vpc" {
       interface_index = "LAN2" # Overriding the default value.
     }
   }
+
+  # Create egress rule for LAN interface to allow all traffic for routed networks
+  internal_sg_egress = [
+    {
+      description      = "Allow all outbound"
+      protocol         = "-1"
+      from_port        = 0
+      to_port          = 0
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+    }
+  ]
+
 
   #Example Tags 
   tags = {

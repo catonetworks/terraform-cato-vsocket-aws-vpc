@@ -77,8 +77,14 @@
 ### Features
 - Added variables for security group ingress and egress for internal and external
 
-## 0.0.16 (2026-02-23)
+## 0.0.16 (2026-04-10)
 
 ### Features
-- Updates readme
+- Updates readme with provider syntax
+
+## 0.0.17 (2026-04-11)
+### Features
+- Added syntax example for internal_sg_egress to allow socket lan traffoc to routed networks in aws
+
+
 
