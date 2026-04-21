@@ -146,6 +146,19 @@ $ catocli query siteLocation -h
 $ catocli query siteLocation '{"filters":[{"search": "San Diego","field":"city","operation":"exact"}]}' -p
 ```
 
+## EC2 Supported Instances
+
+The following EC2 instance types are certified for vSockets:
+
+- `t3.large`
+- `t3.xlarge`
+- `c3.xlarge`
+- `c4.xlarge`
+- `c5.xlarge`
+- `c5d.xlarge`
+- `c5n.xlarge` (Suggested for higher performance sites with bandwidth above 2Gbps)
+- `d2.xlarge`
+
 ## Authors
 
 Module is maintained by [Cato Networks](https://github.com/catonetworks) with help from [these awesome contributors](https://github.com/catonetworks/terraform-cato-vsocket-aws-vpc/graphs/contributors).
@@ -175,7 +188,7 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_vsocket-aws"></a> [vsocket-aws](#module\_vsocket-aws) | catonetworks/vsocket-aws/cato | >= 0.0.17 |
+| <a name="module_vsocket-aws"></a> [vsocket-aws](#module\_vsocket-aws) | catonetworks/vsocket-aws/cato | >= 0.0.21 |
 
 ## Resources
 
@@ -212,7 +225,7 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 | <a name="input_external_sg_egress"></a> [external\_sg\_egress](#input\_external\_sg\_egress) | Egress rules for external security group | <pre>list(object({<br/>    description      = string<br/>    protocol         = string<br/>    from_port        = number<br/>    to_port          = number<br/>    cidr_blocks      = list(string)<br/>    ipv6_cidr_blocks = list(string)<br/>    prefix_list_ids  = list(string)<br/>    security_groups  = list(string)<br/>    self             = bool<br/>  }))</pre> | <pre>[<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "description": "Allow HTTPS Outbound",<br/>    "from_port": 443,<br/>    "ipv6_cidr_blocks": [],<br/>    "prefix_list_ids": [],<br/>    "protocol": "tcp",<br/>    "security_groups": [],<br/>    "self": false,<br/>    "to_port": 443<br/>  },<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "description": "Allow DTLS Outbound",<br/>    "from_port": 443,<br/>    "ipv6_cidr_blocks": [],<br/>    "prefix_list_ids": [],<br/>    "protocol": "udp",<br/>    "security_groups": [],<br/>    "self": false,<br/>    "to_port": 443<br/>  },<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "description": "Allow DNS-UDP Outbound",<br/>    "from_port": 53,<br/>    "ipv6_cidr_blocks": [],<br/>    "prefix_list_ids": [],<br/>    "protocol": "udp",<br/>    "security_groups": [],<br/>    "self": false,<br/>    "to_port": 53<br/>  },<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "description": "Allow DNS-TCP Outbound",<br/>    "from_port": 53,<br/>    "ipv6_cidr_blocks": [],<br/>    "prefix_list_ids": [],<br/>    "protocol": "tcp",<br/>    "security_groups": [],<br/>    "self": false,<br/>    "to_port": 53<br/>  }<br/>]</pre> | no |
 | <a name="input_external_sg_ingress"></a> [external\_sg\_ingress](#input\_external\_sg\_ingress) | Egress rules for external security group | <pre>list(object({<br/>    description      = string<br/>    protocol         = string<br/>    from_port        = number<br/>    to_port          = number<br/>    cidr_blocks      = list(string)<br/>    ipv6_cidr_blocks = list(string)<br/>    prefix_list_ids  = list(string)<br/>    security_groups  = list(string)<br/>    self             = bool<br/>  }))</pre> | `[]` | no |
 | <a name="input_ingress_cidr_blocks"></a> [ingress\_cidr\_blocks](#input\_ingress\_cidr\_blocks) | Set CIDR to receive traffic from the specified IPv4 CIDR address ranges<br/>	For example x.x.x.x/32 to allow one specific IP address access, 0.0.0.0/0 to allow all IP addresses access, or another CIDR range<br/>    Best practice is to allow a few IPs as possible<br/>    The accepted input format is Standard CIDR Notation, e.g. X.X.X.X/X | `list(any)` | `null` | no |
-| <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | The instance type of the vSocket | `string` | `"c5.xlarge"` | no |
+| <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | The instance type of the vSocket. See [EC2 Supported Instances](#ec2-supported-instances). | `string` | `"c5.xlarge"` | no |
 | <a name="input_internal_sg_egress"></a> [internal\_sg\_egress](#input\_internal\_sg\_egress) | Egress rules for internal security group | <pre>list(object({<br/>    description      = string<br/>    protocol         = string<br/>    from_port        = number<br/>    to_port          = number<br/>    cidr_blocks      = list(string)<br/>    ipv6_cidr_blocks = list(string)<br/>    prefix_list_ids  = list(string)<br/>    security_groups  = list(string)<br/>    self             = bool<br/>  }))</pre> | `[]` | no |
 | <a name="input_internal_sg_ingress"></a> [internal\_sg\_ingress](#input\_internal\_sg\_ingress) | Ingress rules for internal security group | <pre>list(object({<br/>    description      = string<br/>    protocol         = number<br/>    from_port        = number<br/>    to_port          = number<br/>    cidr_blocks      = list(string)<br/>    ipv6_cidr_blocks = list(string)<br/>    prefix_list_ids  = list(string)<br/>    security_groups  = list(string)<br/>    self             = bool<br/>  }))</pre> | <pre>[<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "description": "Allow all traffic Outbound",<br/>    "from_port": 0,<br/>    "ipv6_cidr_blocks": [],<br/>    "prefix_list_ids": [],<br/>    "protocol": -1,<br/>    "security_groups": [],<br/>    "self": false,<br/>    "to_port": 0<br/>  }<br/>]</pre> | no |
 | <a name="input_internet_gateway_id"></a> [internet\_gateway\_id](#input\_internet\_gateway\_id) | Specify an Internet Gateway ID to use. If not specified, a new Internet Gateway will be created. | `string` | `null` | no |

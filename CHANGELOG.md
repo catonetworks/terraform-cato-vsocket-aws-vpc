@@ -83,8 +83,11 @@
 - Updates readme with provider syntax
 
 ## 0.0.17 (2026-04-11)
+
 ### Features
 - Added syntax example for internal_sg_egress to allow socket lan traffoc to routed networks in aws
 
+## 0.0.18 (2026-04-20)
 
-
+### Features
+- Raised the `catonetworks/vsocket-aws/cato` minimum version to `0.0.21`, the first release that replaced deprecated inline instance network interface usage with `primary_network_interface` and `aws_network_interface_attachment`
