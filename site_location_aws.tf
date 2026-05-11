@@ -34,7 +34,7 @@ locals {
   ) ? true : false
 
   ## If all site_location fields are null, use the data source to fetch the 
-  ## site_location from AWS provuder location, else use var.site_location
+  ## site_location from AWS provider location, else use var.site_location
   cur_site_location = local.all_location_fields_null ? {
     country_code = data.cato_siteLocation.site_location[0].locations[0].country_code
     timezone     = data.cato_siteLocation.site_location[0].locations[0].timezone[0]

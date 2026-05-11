@@ -4,6 +4,25 @@ Terraform module which creates a VPC, required subnets, elastic network interfac
 
 For the vpc_id and internet_gateway_id leave null to create new or add an id of the already created resources to use existing.
 
+## Prerequisites
+
+Complete these steps before the first Terraform run:
+
+1. In AWS, use a dedicated deployment account or role instead of the administrator account. The account or role needs permissions to create the AWS resources used by this module, including VPCs, EC2 instances, network interfaces, security groups, route tables, Elastic IPs, storage, and any IAM resources required by your organization.
+2. Log in to the AWS account or role that will deploy the vSocket.
+3. In AWS Marketplace, under Discover products, search for `Cato Networks Virtual Socket` and open the result.
+4. Click `View purchase options`, and then subscribe.
+5. In the Cato Management Application, create a service account with permissions to edit sites.
+6. Create a service API key for the service account and copy the key for the Cato Terraform provider.
+7. Install the latest AWS CLI by following the [AWS CLI installation guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+8. Authenticate to AWS from your computer:
+
+```bash
+aws sso login
+```
+
+For a customer-ready starter configuration, see [examples/single-vsocket](./examples/single-vsocket).
+
 <details>
 <summary>Example AWS VPC and Internet Gateway Resources</summary>
 
@@ -30,15 +49,16 @@ terraform apply -target=aws_vpc.cato-vpc -target=aws_internet_gateway.internet_g
 Reference the resources as input variables with the following syntax:
 ```hcl
   vpc_id           = aws_vpc.cato-vpc.id
-  internetGateway  = aws_internet_gateway.internet_gateway.id 
+  internet_gateway_id = aws_internet_gateway.internet_gateway.id
 ```
 
 </details>
 
-## NOTE
+## Notes
 - Site Location for Cato Socket is automatically inferred based on the region being deployed, however this can be overridden if necessary. 
-- For help with finding exact sytax to match site location for city, state_name, country_name and timezone, please refer to the [cato_siteLocation data source](https://registry.terraform.io/providers/catonetworks/cato/latest/docs/data-sources/siteLocation).
+- For help with finding exact syntax to match site location for city, state_name, country_name and timezone, please refer to the [cato_siteLocation data source](https://registry.terraform.io/providers/catonetworks/cato/latest/docs/data-sources/siteLocation).
 - For help with finding a license id to assign, please refer to the [cato_licensingInfo data source](https://registry.terraform.io/providers/catonetworks/cato/latest/docs/data-sources/licensingInfo).
+- For the Cato AWS Marketplace deployment workflow, see [Deploying a vSocket Site from the AWS Marketplace](https://support.catonetworks.com/hc/en-us/articles/16150140007069-Deploying-a-vSocket-Site-from-the-AWS-Marketplace).
 
 ## Usage
 
@@ -47,7 +67,7 @@ terraform {
   required_providers {
     cato = {
       source  = "catonetworks/cato"
-      version = ">= 0.0.70"
+      version = ">= 0.0.73"
     }
     aws = {
       source  = "hashicorp/aws"
@@ -75,7 +95,7 @@ variable "region" {
 }
 
 variable "baseurl" {}
-variable "token" {}
+variable "cato_token" {}
 variable "account_id" {}
 
 // AWS VPC and Virtual Socket Module
@@ -97,6 +117,7 @@ module "vsocket-aws-vpc" {
   region                = var.region
   site_description      = "Your Cato site desc here"
   #site_location derived from region
+  instance_type         = "c5.xlarge"
 
   # Create routed networks in Cato for additional aws subnets
   routed_networks = {
@@ -159,6 +180,8 @@ The following EC2 instance types are certified for vSockets:
 - `c5n.xlarge` (Suggested for higher performance sites with bandwidth above 2Gbps)
 - `d2.xlarge`
 
+The module validates `instance_type` against this list. The default is `c5.xlarge`. Review the EC2 specifications for CPU, memory, networking, regional availability, and cost before choosing the type for a production site. Use `c5n.xlarge` for higher performance sites with bandwidth above 2Gbps. If `c3.xlarge` or `c4.xlarge` are not available in the target AWS Region, contact AWS customer support or choose another supported type.
+
 ## Authors
 
 Module is maintained by [Cato Networks](https://github.com/catonetworks) with help from [these awesome contributors](https://github.com/catonetworks/terraform-cato-vsocket-aws-vpc/graphs/contributors).
@@ -175,14 +198,14 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 | ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.98.00 |
-| <a name="requirement_cato"></a> [cato](#requirement\_cato) | >= 0.0.70 |
+| <a name="requirement_cato"></a> [cato](#requirement\_cato) | >= 0.0.73 |
 
 ## Providers
 
 | Name | Version |
 | ---- | ------- |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.98.00 |
-| <a name="provider_cato"></a> [cato](#provider\_cato) | >= 0.0.70 |
+| <a name="provider_cato"></a> [cato](#provider\_cato) | >= 0.0.73 |
 
 ## Modules
 
@@ -237,7 +260,7 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 | <a name="input_region"></a> [region](#input\_region) | AWS Region | `string` | n/a | yes |
 | <a name="input_routed_networks"></a> [routed\_networks](#input\_routed\_networks) | A map of routed networks to be accessed behind the vSocket site.<br/>  The key is the network name. The value is an object with the following attributes:<br/>  - subnet (string, required): The CIDR range of the network.<br/>  - interface\_index (string, optional): The site interface the network is connected to. Defaults to "LAN1". | <pre>map(object({<br/>    subnet          = string<br/>    interface_index = optional(string, "LAN1")<br/>  }))</pre> | `{}` | no |
 | <a name="input_site_description"></a> [site\_description](#input\_site\_description) | Description of the vsocket site | `string` | n/a | yes |
-| <a name="input_site_location"></a> [site\_location](#input\_site\_location) | Site location which is used by the Cato Socket to connect to the closest Cato PoP. If not specified, the location will be derived from the AWS region dynamicaly. | <pre>object({<br/>    city         = string<br/>    country_code = string<br/>    state_code   = string<br/>    timezone     = string<br/>  })</pre> | <pre>{<br/>  "city": null,<br/>  "country_code": null,<br/>  "state_code": null,<br/>  "timezone": null<br/>}</pre> | no |
+| <a name="input_site_location"></a> [site\_location](#input\_site\_location) | Site location which is used by the Cato Socket to connect to the closest Cato PoP. If not specified, the location will be derived from the AWS region dynamically. | <pre>object({<br/>    city         = string<br/>    country_code = string<br/>    state_code   = string<br/>    timezone     = string<br/>  })</pre> | <pre>{<br/>  "city": null,<br/>  "country_code": null,<br/>  "state_code": null,<br/>  "timezone": null<br/>}</pre> | no |
 | <a name="input_site_name"></a> [site\_name](#input\_site\_name) | Name of the vsocket site | `string` | n/a | yes |
 | <a name="input_site_type"></a> [site\_type](#input\_site\_type) | The type of the site | `string` | `"CLOUD_DC"` | no |
 | <a name="input_subnet_range_lan"></a> [subnet\_range\_lan](#input\_subnet\_range\_lan) | Choose a range within the VPC to use as the Private/LAN subnet. This subnet will host the target LAN interface of the vSocket so resources in the VPC (or AWS Region) can route to the Cato Cloud.<br/>    The minimum subnet length to support High Availability is /29.<br/>    The accepted input format is Standard CIDR Notation, e.g. X.X.X.X/X | `string` | n/a | yes |
