@@ -119,6 +119,11 @@ module "vsocket-aws-vpc" {
   #site_location derived from region
   instance_type         = "c5.xlarge"
 
+  # Customize VPC dns settings to use Cato dns
+  dhcp_options = {
+    domain_name_servers = ["10.254.254.1", "8.8.8.8"]
+  }
+
   # Create routed networks in Cato for additional aws subnets
   routed_networks = {
     "Peered-VNET-1" = {
@@ -194,7 +199,7 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.98.00 |
 | <a name="requirement_cato"></a> [cato](#requirement\_cato) | >= 0.0.73 |
@@ -202,20 +207,20 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.98.00 |
 | <a name="provider_cato"></a> [cato](#provider\_cato) | >= 0.0.73 |
 
 ## Modules
 
 | Name | Source | Version |
-| ---- | ------ | ------- |
+|------|--------|---------|
 | <a name="module_vsocket-aws"></a> [vsocket-aws](#module\_vsocket-aws) | catonetworks/vsocket-aws/cato | >= 0.0.21 |
 
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [aws_eip.mgmteip](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | resource |
 | [aws_eip.waneip](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | resource |
 | [aws_eip_association.mgmteip_assoc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip_association) | resource |
@@ -245,7 +250,7 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_dhcp_options"></a> [dhcp\_options](#input\_dhcp\_options) | Optional DHCP options set for the VPC created by this module.<br/>    When null (default), AWS default DHCP options are used (AmazonProvidedDNS).<br/>    When set, a new aws\_vpc\_dhcp\_options resource is created and associated<br/>    with the VPC. Only applied when the module creates the VPC (vpc\_id == null). | <pre>object({<br/>    domain_name          = optional(string)<br/>    domain_name_servers  = optional(list(string))<br/>    ntp_servers          = optional(list(string))<br/>    netbios_name_servers = optional(list(string))<br/>    netbios_node_type    = optional(string)<br/>  })</pre> | `null` | no |
 | <a name="input_external_sg_egress"></a> [external\_sg\_egress](#input\_external\_sg\_egress) | Egress rules for external security group | <pre>list(object({<br/>    description      = string<br/>    protocol         = string<br/>    from_port        = number<br/>    to_port          = number<br/>    cidr_blocks      = list(string)<br/>    ipv6_cidr_blocks = list(string)<br/>    prefix_list_ids  = list(string)<br/>    security_groups  = list(string)<br/>    self             = bool<br/>  }))</pre> | <pre>[<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "description": "Allow HTTPS Outbound",<br/>    "from_port": 443,<br/>    "ipv6_cidr_blocks": [],<br/>    "prefix_list_ids": [],<br/>    "protocol": "tcp",<br/>    "security_groups": [],<br/>    "self": false,<br/>    "to_port": 443<br/>  },<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "description": "Allow DTLS Outbound",<br/>    "from_port": 443,<br/>    "ipv6_cidr_blocks": [],<br/>    "prefix_list_ids": [],<br/>    "protocol": "udp",<br/>    "security_groups": [],<br/>    "self": false,<br/>    "to_port": 443<br/>  },<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "description": "Allow DNS-UDP Outbound",<br/>    "from_port": 53,<br/>    "ipv6_cidr_blocks": [],<br/>    "prefix_list_ids": [],<br/>    "protocol": "udp",<br/>    "security_groups": [],<br/>    "self": false,<br/>    "to_port": 53<br/>  },<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "description": "Allow DNS-TCP Outbound",<br/>    "from_port": 53,<br/>    "ipv6_cidr_blocks": [],<br/>    "prefix_list_ids": [],<br/>    "protocol": "tcp",<br/>    "security_groups": [],<br/>    "self": false,<br/>    "to_port": 53<br/>  }<br/>]</pre> | no |
 | <a name="input_external_sg_ingress"></a> [external\_sg\_ingress](#input\_external\_sg\_ingress) | Egress rules for external security group | <pre>list(object({<br/>    description      = string<br/>    protocol         = string<br/>    from_port        = number<br/>    to_port          = number<br/>    cidr_blocks      = list(string)<br/>    ipv6_cidr_blocks = list(string)<br/>    prefix_list_ids  = list(string)<br/>    security_groups  = list(string)<br/>    self             = bool<br/>  }))</pre> | `[]` | no |
@@ -276,7 +281,7 @@ Apache 2 Licensed. See [LICENSE](https://github.com/catonetworks/terraform-cato-
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_cato_license_site"></a> [cato\_license\_site](#output\_cato\_license\_site) | n/a |
 | <a name="output_cato_site_name"></a> [cato\_site\_name](#output\_cato\_site\_name) | n/a |
 | <a name="output_external_sg"></a> [external\_sg](#output\_external\_sg) | n/a |
