@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.20 (2026-05-13)
+
+### Features
+- Added support for vpc.dhcp_options with example of customizing AWS VPC DNS to use cato to support private applications and dns security.
+
 ## 0.0.19 (2026-05-06)
 
 ### Features
