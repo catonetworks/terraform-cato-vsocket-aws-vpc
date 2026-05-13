@@ -67,8 +67,8 @@ resource "aws_security_group" "internal_sg" {
   name        = "${var.site_name}-Cato-Internal-SG"
   description = "CATO LAN Security Group - Allow all traffic Inbound"
   vpc_id      = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
-  egress = var.internal_sg_egress
-  ingress = var.internal_sg_ingress
+  egress      = var.internal_sg_egress
+  ingress     = var.internal_sg_ingress
   tags = merge(var.tags, {
     name = "${var.site_name}-Cato-Internal-SG"
   })
@@ -79,7 +79,7 @@ resource "aws_security_group" "external_sg" {
   description = "CATO WAN Security Group"
   vpc_id      = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   ingress     = var.external_sg_ingress
-  egress = var.external_sg_egress
+  egress      = var.external_sg_egress
   tags = merge(var.tags, {
     name = "${var.site_name}-Cato-External-SG"
   })
@@ -186,7 +186,7 @@ resource "aws_route_table_association" "lan_subnet_route_table_association" {
 
 module "vsocket-aws" {
   source           = "catonetworks/vsocket-aws/cato"
-  version          = ">= 0.0.17"
+  version          = ">= 0.0.21"
   vpc_id           = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id
   key_pair         = var.key_pair
   region           = var.region

@@ -2,7 +2,7 @@ terraform {
   required_providers {
     cato = {
       source  = "catonetworks/cato"
-      version = ">= 0.0.38"
+      version = ">= 0.0.73"
     }
     aws = {
       source  = "hashicorp/aws"

@@ -1,48 +1,47 @@
 # Changelog
 
-## 0.0.1 (2024-11-07)
+## 0.0.19 (2026-05-06)
 
 ### Features
-- Initial commit with single socket instance with 3 NICs, creating full vpc
+- Added customer-ready single vSocket AWS VPC example and expanded deployment documentation for AWS Marketplace, CMA service account setup, AWS CLI authentication, and supported instance type selection
 
-## 0.0.2 (2024-11-25)
-
-### Features
-- Adding socket_site_serial and socket_site_id to module outputs.
-
-## 0.0.4 (2025-04-24)
+## 0.0.18 (2026-04-20)
 
 ### Features
-- Extracting provider from module to be passed in
+- Raised the `catonetworks/vsocket-aws/cato` minimum version to `0.0.21`, the first release that replaced deprecated inline instance network interface usage with `primary_network_interface` and `aws_network_interface_attachment`
 
-
-## 0.0.5 (2025-05-07)
-
-### Features
-- Made vpc and internet gateway resource optional
-
-## 0.0.6 (2025-05-07)
+## 0.0.17 (2026-04-11)
 
 ### Features
-- Added optional license resource and inputs used for commercial site deployments
+- Added syntax example for internal_sg_egress to allow socket lan traffoc to routed networks in aws
 
-## 0.0.7 (2025-05-08)
-
-### Features
-- Adjusted Readme Example to Match Variable Name (vpc_range becomes native_network_range)
-- Disassociated native_network_range from vpc_cidr_range to enable VPC_CIDR to be different from Native_network_range
-
-## 0.0.8 (2025-05-09)
+## 0.0.16 (2026-04-10)
 
 ### Features
-- Adjusted Outputs to accomodate license resource added in ver 0.0.6
-- Added output for Socket Lan Route Table (lan_subnet_route_table_id) for use in upstream calls
-- Removed Management Route Table - No Longer Needed 
-- Updated Cato vSocket WAN Security Group to Remove Inbound Rules 
-- Updated Cato vSocket WAN Security Group to Add Outbound Rules (udp/443, tcp/443, udp/53, tcp/53)
+- Updates readme with provider syntax
 
-## 0.0.9
- - Added output to get Lan Subnet Availability Zone
+## 0.0.14 (2026-02-23)
+
+### Features
+- Added variables for security group ingress and egress for internal and external
+
+## 0.0.13 (2025-08-01)
+
+### Features
+- Removed reference to Azure in readme for region
+
+## 0.0.12 (2025-08-01)
+
+### Features
+ - Updated to use latest provider version 
+  - Adjusted routed_networks call to include interface_index 
+ - Version Lock to Provider version 0.0.38 or greater
+
+## 0.0.11 (2025-07-16)
+
+### Features 
+ - Updated Site_Location to latest Revision 
+ - Version locked Cato provider to 0.0.30 or greater
 
 ## 0.0.10 (2025-06-27)
 
@@ -54,37 +53,46 @@
 - Version Locked Sub-Module call
 - Updated Requirements for Provider and Terraform, adjusted versions file. 
 
-## 0.0.11 (2025-07-16)
+## 0.0.9
 
-### Features 
- - Updated Site_Location to latest Revision 
- - Version locked Cato provider to 0.0.30 or greater
+- Added output to get Lan Subnet Availability Zone
 
-## 0.0.12 (2025-08-01)
+## 0.0.8 (2025-05-09)
 
 ### Features
- - Updated to use latest provider version 
-  - Adjusted routed_networks call to include interface_index 
- - Version Lock to Provider version 0.0.38 or greater
+- Adjusted Outputs to accomodate license resource added in ver 0.0.6
+- Added output for Socket Lan Route Table (lan_subnet_route_table_id) for use in upstream calls
+- Removed Management Route Table - No Longer Needed 
+- Updated Cato vSocket WAN Security Group to Remove Inbound Rules 
+- Updated Cato vSocket WAN Security Group to Add Outbound Rules (udp/443, tcp/443, udp/53, tcp/53)
 
-## 0.0.13 (2025-08-01)
-
-### Features
-- Removed reference to Azure in readme for region
-
-## 0.0.14 (2026-02-23)
+## 0.0.7 (2025-05-08)
 
 ### Features
-- Added variables for security group ingress and egress for internal and external
+- Adjusted Readme Example to Match Variable Name (vpc_range becomes native_network_range)
+- Disassociated native_network_range from vpc_cidr_range to enable VPC_CIDR to be different from Native_network_range
 
-## 0.0.16 (2026-04-10)
+## 0.0.6 (2025-05-07)
 
 ### Features
-- Updates readme with provider syntax
+- Added optional license resource and inputs used for commercial site deployments
 
-## 0.0.17 (2026-04-11)
+## 0.0.5 (2025-05-07)
+
 ### Features
-- Added syntax example for internal_sg_egress to allow socket lan traffoc to routed networks in aws
+- Made vpc and internet gateway resource optional
 
+## 0.0.4 (2025-04-24)
 
+### Features
+- Extracting provider from module to be passed in
 
+## 0.0.2 (2024-11-25)
+
+### Features
+- Adding socket_site_serial and socket_site_id to module outputs.
+
+## 0.0.1 (2024-11-07)
+
+### Features
+- Initial commit with single socket instance with 3 NICs, creating full vpc
