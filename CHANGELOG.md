@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.21 (2026-05-28)
+
+### Fixes
+- Fixed optional VPC and Internet Gateway handling to avoid missing resource state and invalid index failures when using existing `vpc_id` and `internet_gateway_id`.
+- Hardened related outputs and input validation so existing-network and module-managed-networking modes are handled consistently.
+
 ## 0.0.20 (2026-05-13)
 
 ### Features
