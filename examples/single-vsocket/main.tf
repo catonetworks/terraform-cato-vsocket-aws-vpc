@@ -49,7 +49,8 @@ module "vsocket-aws-vpc" {
   source  = "catonetworks/vsocket-aws-vpc/cato"
   version = ">= 0.0.10"
 
-  # Leave these null to create a new VPC and Internet Gateway.
+  # Leave both null to create a new VPC and Internet Gateway.
+  # If you provide internet_gateway_id, you must also provide vpc_id.
   vpc_id              = null
   internet_gateway_id = null
 

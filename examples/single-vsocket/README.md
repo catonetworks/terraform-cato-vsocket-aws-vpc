@@ -34,7 +34,7 @@ terraform plan
 terraform apply
 ```
 
-The example leaves `vpc_id` and `internet_gateway_id` as `null`, so the module creates a new VPC and Internet Gateway. To deploy into existing AWS networking, set those inputs to existing resource IDs.
+The example leaves both `vpc_id` and `internet_gateway_id` as `null`, so the module creates a new VPC and Internet Gateway. To deploy into existing AWS networking, set both inputs to existing resource IDs.
 
 ## Instance Type
 

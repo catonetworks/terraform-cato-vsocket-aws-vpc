@@ -2,7 +2,9 @@
 
 Terraform module which creates a VPC, required subnets, elastic network interfaces, security groups, route tables, an AWS Socket Site in the Cato Management Application (CMA), and deploys a virtual socket ec2 instance in AWS.
 
-For the vpc_id and internet_gateway_id leave null to create new or add an id of the already created resources to use existing.
+For `vpc_id` and `internet_gateway_id`, use one of these supported modes:
+- Set both to `null` to create a new VPC and Internet Gateway.
+- Set both to existing IDs to deploy into existing networking.
 
 ## Prerequisites
 
@@ -51,6 +53,8 @@ Reference the resources as input variables with the following syntax:
   vpc_id           = aws_vpc.cato-vpc.id
   internet_gateway_id = aws_internet_gateway.internet_gateway.id
 ```
+
+If `internet_gateway_id` is provided, `vpc_id` must also be provided.
 
 </details>
 
