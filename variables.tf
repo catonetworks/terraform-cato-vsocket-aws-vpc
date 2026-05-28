@@ -54,6 +54,10 @@ variable "internet_gateway_id" {
   description = "Specify an Internet Gateway ID to use. If not specified, a new Internet Gateway will be created."
   type        = string
   default     = null
+  validation {
+    condition     = var.internet_gateway_id == null || var.vpc_id != null
+    error_message = "When internet_gateway_id is provided, vpc_id must also be provided so the module can consistently use existing networking resources."
+  }
 }
 
 variable "ingress_cidr_blocks" {

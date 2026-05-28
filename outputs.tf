@@ -1,6 +1,6 @@
 ## The following attributes are exported:
-output "internet_gateway_id" { value = var.internet_gateway_id == null ? aws_internet_gateway.internet_gateway[0].id : var.internet_gateway_id }
-output "vpc_id" { value = var.vpc_id == null ? aws_vpc.cato-vpc[0].id : var.vpc_id }
+output "internet_gateway_id" { value = coalesce(var.internet_gateway_id, try(aws_internet_gateway.internet_gateway[0].id, null)) }
+output "vpc_id" { value = coalesce(var.vpc_id, try(aws_vpc.cato-vpc[0].id, null)) }
 output "sg_internal" { value = aws_security_group.internal_sg.id }
 output "sg_external" { value = aws_security_group.external_sg.id }
 output "mgmt_subnet_id" { value = aws_subnet.mgmt_subnet.id }
